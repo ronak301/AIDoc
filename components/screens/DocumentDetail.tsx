@@ -123,7 +123,9 @@ Branch: ${document.branchAddress}
             <span className="material-symbols-outlined text-gray-800 dark:text-white">arrow_back_ios_new</span>
           </div>
           <h2 className="text-gray-800 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center truncate px-2">{document.title}</h2>
-          <div className="flex size-10 shrink-0 items-center justify-center"></div>
+          <div className="flex size-10 shrink-0 items-center justify-center cursor-pointer text-red-500" onClick={handleDelete}>
+             <span className="material-symbols-outlined">{confirmDelete ? 'warning' : 'delete'}</span>
+          </div>
         </div>
 
         <div className="flex-grow px-4 pt-4 pb-32">

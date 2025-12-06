@@ -222,7 +222,7 @@ const DocumentList: React.FC<Props> = ({ setScreen, activeCategory, onCategoryCh
       </div>
 
       <div className="px-4 pb-2 mt-2">
-        {/* Main Categories */}
+        {/* Main Categories - flex-wrap ensures multi-line */}
         <div className="flex w-full gap-2 flex-wrap pb-2 items-center">
           {DOCUMENT_TABS.map((tabId) => {
              const category = DOCUMENT_CATEGORIES.find(c => c.id === tabId);

@@ -38,8 +38,6 @@ const Profile: React.FC<Props> = ({ setScreen }) => {
     try {
         const code = await syncFamilyData(state);
         dispatch({ type: 'SET_FAMILY_CODE', payload: code });
-        // Also update local state so current user sees the code immediately without refresh
-        // (Reducer handles this)
         showToast('Sync successful! Family code updated.');
     } catch (error) {
         showToast('Sync failed. Please try again.');
@@ -166,16 +164,8 @@ const Profile: React.FC<Props> = ({ setScreen }) => {
                     <div className={`absolute inset-0.5 w-5 h-5 rounded-full bg-white transition-transform duration-300 ${settings.documentExpiryAlerts ? 'translate-x-5' : 'translate-x-0'}`}></div>
               </div>
             </div>
-            {/* Other notifications remain same... omitted for brevity if unchanged logic-wise, but including full block for file replacement */}
-            <div className="flex items-center p-4 justify-between cursor-pointer" onClick={() => toggleSetting('medicineAlerts')}>
-              <div className="flex flex-col flex-1 pr-4">
-                <p className="text-black dark:text-white text-base font-medium">Medicine Reminders</p>
-                <p className="text-black/70 dark:text-white/70 text-sm">Daily reminders for medications.</p>
-              </div>
-               <div className={`relative inline-block w-11 h-6 cursor-pointer rounded-full transition-colors ${settings.medicineAlerts ? 'bg-primary' : 'bg-zinc-600/50'}`}>
-                    <div className={`absolute inset-0.5 w-5 h-5 rounded-full bg-white transition-transform duration-300 ${settings.medicineAlerts ? 'translate-x-5' : 'translate-x-0'}`}></div>
-              </div>
-            </div>
+            
+            {/* Water Alerts */}
             <div className="flex items-center p-4 justify-between cursor-pointer" onClick={() => toggleSetting('waterAlerts')}>
               <div className="flex flex-col flex-1 pr-4">
                 <p className="text-black dark:text-white text-base font-medium">Hydration Alerts</p>
@@ -185,6 +175,8 @@ const Profile: React.FC<Props> = ({ setScreen }) => {
                     <div className={`absolute inset-0.5 w-5 h-5 rounded-full bg-white transition-transform duration-300 ${settings.waterAlerts ? 'translate-x-5' : 'translate-x-0'}`}></div>
               </div>
             </div>
+
+            {/* Steps Alerts */}
             <div className="flex items-center p-4 justify-between cursor-pointer" onClick={() => toggleSetting('stepsAlerts')}>
               <div className="flex flex-col flex-1 pr-4">
                 <p className="text-black dark:text-white text-base font-medium">Goal Achievements</p>
@@ -192,6 +184,17 @@ const Profile: React.FC<Props> = ({ setScreen }) => {
               </div>
                <div className={`relative inline-block w-11 h-6 cursor-pointer rounded-full transition-colors ${settings.stepsAlerts ? 'bg-primary' : 'bg-zinc-600/50'}`}>
                     <div className={`absolute inset-0.5 w-5 h-5 rounded-full bg-white transition-transform duration-300 ${settings.stepsAlerts ? 'translate-x-5' : 'translate-x-0'}`}></div>
+              </div>
+            </div>
+
+            {/* Medicine Alerts */}
+            <div className="flex items-center p-4 justify-between cursor-pointer" onClick={() => toggleSetting('medicineAlerts')}>
+              <div className="flex flex-col flex-1 pr-4">
+                <p className="text-black dark:text-white text-base font-medium">Medicine Reminders</p>
+                <p className="text-black/70 dark:text-white/70 text-sm">Daily reminders for medications.</p>
+              </div>
+               <div className={`relative inline-block w-11 h-6 cursor-pointer rounded-full transition-colors ${settings.medicineAlerts ? 'bg-primary' : 'bg-zinc-600/50'}`}>
+                    <div className={`absolute inset-0.5 w-5 h-5 rounded-full bg-white transition-transform duration-300 ${settings.medicineAlerts ? 'translate-x-5' : 'translate-x-0'}`}></div>
               </div>
             </div>
           </div>
