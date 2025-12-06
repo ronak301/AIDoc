@@ -21,9 +21,19 @@ const AppContent: React.FC = () => {
   const { state } = useAppStore();
   const [currentScreen, setScreen] = useState<ScreenName>(ScreenName.HOME);
 
-  // If loading, show nothing or spinner. If no users, show Onboarding.
-  if (state.isLoading) return null;
-  if (state.users.length === 0) return <Onboarding />;
+  // Loading State
+  if (state.isLoading) {
+    return (
+      <div className="flex h-screen w-full items-center justify-center bg-background-light dark:bg-background-dark">
+        <div className="size-10 border-4 border-primary/30 border-t-primary rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+  // Onboarding Check
+  if (state.users.length === 0) {
+    return <Onboarding />;
+  }
 
   // Helper to determine if we should show the bottom nav
   const showBottomNav = [

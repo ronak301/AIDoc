@@ -210,16 +210,32 @@ const loadFromStorage = (): AppState | null => {
     const stored = localStorage.getItem(APP_CONFIG.localStorageKey);
     if (stored) {
       const parsed = JSON.parse(stored);
-      // Merge with default settings in case new settings were added since last save
-      if (!parsed.settings) parsed.settings = initialState.settings;
-      else parsed.settings = { ...initialState.settings, ...parsed.settings };
-      // Handle missing dailyStats
+      
+      // SANITIZE & MERGE DEFAULTS: Crucial for preventing crashes with old data
+      if (!parsed.users) parsed.users = [];
+      if (!parsed.documents) parsed.documents = [];
+      if (!parsed.medicines) parsed.medicines = [];
       if (!parsed.dailyStats) parsed.dailyStats = {};
       if (!parsed.medicineIntake) parsed.medicineIntake = {};
+      
+      // Merge with default settings
+      parsed.settings = { ...initialState.settings, ...(parsed.settings || {}) };
+
+      // Ensure currentUser is valid
+      if (parsed.users.length > 0 && !parsed.currentUser) {
+          parsed.currentUser = parsed.users[0];
+      }
+      // If persisted currentUser doesn't exist in users array (data corruption), reset to first user
+      if (parsed.currentUser && parsed.users.length > 0) {
+          const exists = parsed.users.find((u: User) => u.id === parsed.currentUser?.id);
+          if (!exists) parsed.currentUser = parsed.users[0];
+      }
+
       return parsed;
     }
   } catch (e) {
     console.error("Failed to load from local storage", e);
+    return null;
   }
   return null;
 };
@@ -235,7 +251,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     const loadedData = loadFromStorage();
-    if (loadedData && loadedData.users && loadedData.users.length > 0) {
+    if (loadedData) {
       dispatch({ type: 'INIT_DATA', payload: loadedData });
     } else {
       // Start fresh, no dummy data

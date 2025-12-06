@@ -16,6 +16,13 @@ const Home: React.FC<HomeProps> = ({ setScreen }) => {
   const users = state.users;
   const documents = state.documents;
 
+  // Fail-safe: If users exist but currentUser is null (e.g. data corruption), fallback to first user
+  useEffect(() => {
+    if (users.length > 0 && !currentUser) {
+        dispatch({ type: 'SWITCH_USER', payload: users[0].id });
+    }
+  }, [users, currentUser, dispatch]);
+
   // --- Daily Stats Logic ---
   const todayKey = currentUser ? getTodayKey(currentUser.id) : '';
   const dailyStats = state.dailyStats[todayKey] || { water: 0, steps: 0 };
@@ -53,7 +60,6 @@ const Home: React.FC<HomeProps> = ({ setScreen }) => {
     const timeSortOrder: Record<string, number> = { 'Morning': 1, 'Afternoon': 2, 'Evening': 3, 'Night': 4 };
 
     activeMedicines.forEach(med => {
-        // If Frequency is Weekly, we might want to check day, but for now assuming daily for simplicity/MVP
         const times = med.medicineTimes || [];
         
         times.forEach(time => {
@@ -75,7 +81,6 @@ const Home: React.FC<HomeProps> = ({ setScreen }) => {
   };
 
   const medicineSchedule = getTodaySchedule();
-  // Fix: Use standard formatter to avoid "Dec 7 7" duplication issue
   const todayDateDisplay = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 
   // --- Navigation Listener for Expiring Documents Screen ---
@@ -144,7 +149,7 @@ const Home: React.FC<HomeProps> = ({ setScreen }) => {
             {users.map((user) => {
               const isActive = user.id === currentUser.id;
               return (
-                <div key={user.id} className="flex w-16 shrink-0 flex-col items-center justify-center gap-2 text-center" onClick={() => handleSwitchUser(user.id)}>
+                <div key={user.id} className="flex w-16 shrink-0 flex-col items-center justify-center gap-2 text-center cursor-pointer" onClick={() => handleSwitchUser(user.id)}>
                   <div className="relative w-full">
                     <div 
                       className={`aspect-square w-full rounded-full bg-cover bg-center transition-all ${isActive ? 'ring-2 ring-primary ring-offset-2 ring-offset-background-dark' : 'opacity-70'}`}

@@ -2,7 +2,7 @@
 import { ScreenName } from "./types";
 
 export const APP_CONFIG = {
-  localStorageKey: 'family_health_docs_data_v3', // Increment version to force fresh start
+  localStorageKey: 'family_health_docs_data_v4', // Bump version to force fresh start with robust structure
 };
 
 export interface CategoryConfig {
@@ -22,6 +22,7 @@ export const DOCUMENT_CATEGORIES: CategoryConfig[] = [
   { id: 'Vehicles', label: 'Vehicles', icon: 'directions_car', isSharedDefault: true },
 ];
 
+// Removed 'All' tab
 export const DOCUMENT_TABS = [...DOCUMENT_CATEGORIES.map(c => c.id)];
 
 export const MEDICAL_SUB_CATEGORIES = [

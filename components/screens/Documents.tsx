@@ -15,7 +15,7 @@ interface DocumentsProps {
 const Documents: React.FC<DocumentsProps> = ({ currentScreen, setScreen }) => {
   const { state, dispatch } = useAppStore();
   const [editDocumentId, setEditDocumentId] = useState<string | null>(null);
-  const [activeCategory, setActiveCategory] = useState<string>('Identity'); // Defaults to Identity (Personal)
+  const [activeCategory, setActiveCategory] = useState<string>('Identity'); // Defaults to Identity
 
   if (currentScreen === ScreenName.ADD_DOCUMENT) {
     return (
