@@ -90,7 +90,13 @@ const Home: React.FC<HomeProps> = ({ setScreen }) => {
       return () => window.removeEventListener('NAVIGATE_TO_DOC_DETAIL', handleNav);
   }, [setScreen]);
 
-  if (!currentUser) return null;
+  if (!currentUser) {
+    return (
+        <div className="flex h-screen w-full items-center justify-center bg-background-light dark:bg-background-dark">
+            <div className="size-8 border-4 border-primary/30 border-t-primary rounded-full animate-spin"></div>
+        </div>
+    );
+  }
 
   const handleSwitchUser = (userId: string) => {
     dispatch({ type: 'SWITCH_USER', payload: userId });

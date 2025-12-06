@@ -1,4 +1,3 @@
-
 import React, { createContext, useReducer, useEffect, useContext, ReactNode } from 'react';
 import { Document, User, Medicine, Settings, DailyStats } from './types';
 import { APP_CONFIG } from './config';
@@ -246,7 +245,7 @@ const AppContext = createContext<{
   dispatch: React.Dispatch<Action>;
 }>({ state: initialState, dispatch: () => null });
 
-export const AppProvider = ({ children }: { children: ReactNode }) => {
+export const AppProvider = ({ children }: { children?: ReactNode }) => {
   const [state, dispatch] = useReducer(appReducer, initialState);
 
   useEffect(() => {
