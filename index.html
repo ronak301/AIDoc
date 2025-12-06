@@ -12,6 +12,17 @@
         if (args[0] && typeof args[0] === 'string' && args[0].includes('cdn.tailwindcss.com should not be used in production')) return;
         originalWarn.apply(console, args);
       };
+      
+      window.onerror = function(message, source, lineno, colno, error) {
+        console.error('[Global Error]', message, source, lineno, colno, error);
+        const root = document.getElementById('root');
+        if (root) {
+            root.innerHTML = `<div style="color: red; padding: 20px;">
+                <h3>Something went wrong</h3>
+                <p>${message}</p>
+            </div>`;
+        }
+      };
     </script>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com" rel="preconnect" />
@@ -82,6 +93,7 @@
 </script>
 </head>
   <body>
-    <div id="root"></div>
+    <div id="root" class="flex h-screen w-full items-center justify-center text-white">Loading App...</div>
+    <script type="module" src="./index.tsx"></script>
   </body>
 </html>
