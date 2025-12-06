@@ -21,6 +21,9 @@ const AppContent: React.FC = () => {
   const { state } = useAppStore();
   const [currentScreen, setScreen] = useState<ScreenName>(ScreenName.HOME);
 
+  // Debug logging
+  console.log(`[App] Render. isLoading: ${state.isLoading}, Users: ${state.users?.length}, CurrentScreen: ${currentScreen}`);
+
   // Loading State
   if (state.isLoading) {
     return (
@@ -31,7 +34,8 @@ const AppContent: React.FC = () => {
   }
 
   // Onboarding Check
-  if (state.users.length === 0) {
+  if (!state.users || state.users.length === 0) {
+    console.log('[App] Redirecting to Onboarding');
     return <Onboarding />;
   }
 

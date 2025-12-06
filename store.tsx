@@ -1,3 +1,4 @@
+
 import React, { createContext, useReducer, useEffect, useContext, ReactNode } from 'react';
 import { Document, User, Medicine, Settings, DailyStats } from './types';
 import { APP_CONFIG } from './config';
@@ -56,6 +57,10 @@ type Action =
 // --- Reducer ---
 const appReducer = (state: AppState, action: Action): AppState => {
   let newState: AppState;
+  
+  if (action.type !== 'UPDATE_DAILY_STATS' && action.type !== 'TOGGLE_MEDICINE_INTAKE') {
+     console.log('[Reducer] Action:', action.type);
+  }
 
   switch (action.type) {
     case 'INIT_DATA':
@@ -150,6 +155,7 @@ const appReducer = (state: AppState, action: Action): AppState => {
 
     case 'RESET_DATA':
       try {
+        console.log('[Reducer] RESET_DATA triggered');
         localStorage.removeItem(APP_CONFIG.localStorageKey);
       } catch(e) {}
       newState = {
@@ -200,14 +206,16 @@ const saveToStorage = (state: Partial<AppState>) => {
     const { isLoading, ...toSave } = state as AppState;
     localStorage.setItem(APP_CONFIG.localStorageKey, JSON.stringify(toSave));
   } catch (e) {
-    console.error("Failed to save to local storage", e);
+    console.error("[Store] Failed to save to local storage", e);
   }
 };
 
 const loadFromStorage = (): AppState | null => {
   try {
+    console.log('[Store] loadFromStorage called...');
     const stored = localStorage.getItem(APP_CONFIG.localStorageKey);
     if (stored) {
+      console.log('[Store] Found data in local storage.');
       const parsed = JSON.parse(stored);
       
       // SANITIZE & MERGE DEFAULTS: Crucial for preventing crashes with old data
@@ -222,18 +230,24 @@ const loadFromStorage = (): AppState | null => {
 
       // Ensure currentUser is valid
       if (parsed.users.length > 0 && !parsed.currentUser) {
+          console.log('[Store] Patching missing currentUser...');
           parsed.currentUser = parsed.users[0];
       }
       // If persisted currentUser doesn't exist in users array (data corruption), reset to first user
       if (parsed.currentUser && parsed.users.length > 0) {
           const exists = parsed.users.find((u: User) => u.id === parsed.currentUser?.id);
-          if (!exists) parsed.currentUser = parsed.users[0];
+          if (!exists) {
+             console.log('[Store] currentUser mismatch, resetting to first user.');
+             parsed.currentUser = parsed.users[0];
+          }
       }
 
       return parsed;
+    } else {
+        console.log('[Store] No data in local storage.');
     }
   } catch (e) {
-    console.error("Failed to load from local storage", e);
+    console.error("[Store] Failed to load from local storage", e);
     return null;
   }
   return null;
@@ -246,14 +260,18 @@ const AppContext = createContext<{
 }>({ state: initialState, dispatch: () => null });
 
 export const AppProvider = ({ children }: { children?: ReactNode }) => {
+  console.log('[Store] AppProvider mounting...');
   const [state, dispatch] = useReducer(appReducer, initialState);
 
   useEffect(() => {
+    console.log('[Store] Initializing data effect...');
     const loadedData = loadFromStorage();
     if (loadedData) {
+      console.log('[Store] Dispatching INIT_DATA with loaded data.');
       dispatch({ type: 'INIT_DATA', payload: loadedData });
     } else {
       // Start fresh, no dummy data
+      console.log('[Store] Dispatching INIT_DATA with empty state.');
       dispatch({ type: 'INIT_DATA', payload: { ...initialState, isLoading: false } });
     }
   }, []);
